@@ -1,10 +1,27 @@
 import 'dotenv/config'
 import 'module-alias/register'
-import validateEnv from '@/utils/validateEnv'
 import App from './app'
+import { env } from '@/config/env'
 
-validateEnv()
 
-const app = new App([], Number(process.env.PORT))
+async function main () {
+    const app = new App([
 
-app.listen()
+    ], Number(env.PORT), env.HOST)
+
+    app.listen()
+
+    const signals = ["SIGINT", "SIGTERM"]
+
+    signals.forEach(signal => {
+        process.on(signal, () => {
+            gracefulShutdown(app)
+        })
+    })
+}
+
+async function gracefulShutdown(app: App) {
+    app.close()
+}
+
+main()
