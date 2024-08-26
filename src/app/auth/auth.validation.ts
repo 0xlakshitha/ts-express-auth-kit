@@ -21,3 +21,17 @@ export const emailVerificationValidation = Joi.object({
     otp: Joi.string().max(6).min(6).required()
 })
 
+export const passwordChangeValidation = Joi.object({
+    password: Joi.string().min(8).required(),
+    oldPassword: Joi.string().required()
+})
+
+export const forgotPasswordValidation = Joi.object({
+    username: Joi.string().required()
+})
+
+export const resetPasswordValidation = Joi.object({
+    secret: Joi.string().required(),
+    password: Joi.string().min(8).required()
+})
+

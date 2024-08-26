@@ -17,5 +17,7 @@ export const env = zennv({
         LOGO_URL: z.string(),
         ROLE_BASED_AUTH: z.string().regex(/^(true|false)$/).default('false'),
         ALT_AUTH_CREDENTIALS_IN_REQ_BODY: z.string().regex(/^(true|false)$/).default('false'),
+        PASSWORD_RESET_EXPIRY: z.number().default(3600),
+        SITE_URL: z.string(),
     })
 })

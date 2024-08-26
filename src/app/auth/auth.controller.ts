@@ -7,7 +7,7 @@ import ErrorCodes from "@/config/error.codes";
 import withErrorHandling from "@/utils/error.handling";
 import * as argon from "argon2"
 import validationMiddleware from "@/middleware/validation.middleware";
-import { emailVerificationValidation, signUpValidation, singInValidation } from "./auth.validation";
+import { emailVerificationValidation, forgotPasswordValidation, passwordChangeValidation, resetPasswordValidation, signUpValidation, singInValidation } from "./auth.validation";
 import { authenticator } from "otplib";
 import { env } from "@/config/env";
 import { compileTemplate } from "@/utils/hbs";
@@ -15,6 +15,7 @@ import { sendMail } from "@/utils/mailer";
 import { createToken } from "@/utils/jwt";
 import { authenticate } from "@/middleware/authenticate.middleware";
 import { sendResponse } from "@/utils/response";
+import { generateToken } from "@/utils/generateToken";
 
 authenticator.options = {
     digits: 6,
@@ -56,6 +57,22 @@ class AuthController implements Controller {
             authenticate(),
             validationMiddleware(emailVerificationValidation),
             this.verifyEmail
+        )
+        this.router.post(
+            `${this.path}/change-password`,
+            authenticate(),
+            validationMiddleware(passwordChangeValidation),
+            this.changePassword
+        )
+        this.router.post(
+            `${this.path}/forgot-password`,
+            validationMiddleware(forgotPasswordValidation),
+            this.forgotPassword
+        )
+        this.router.post(
+            `${this.path}/reset-password`,
+            validationMiddleware(resetPasswordValidation),
+            this.resetPassword
         )
     }
 
@@ -225,7 +242,7 @@ class AuthController implements Controller {
 
     private sendVerificationEmail = async (userId: string, email: string): Promise<void> => {
         const secret = authenticator.generateSecret();
-        await withErrorHandling(this.authService.createScret)(userId, secret);
+        await withErrorHandling(this.authService.createScret)(userId, secret, "email_verification");
 
         const otp = authenticator.generate(secret);
 
@@ -240,6 +257,107 @@ class AuthController implements Controller {
             html,
             text: `Your OTP is ${otp}`
         })
+    }
+
+    private changePassword = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { _id } = req.user
+            const { password, oldPassword } = req.body
+
+            const user = await withErrorHandling(this.authService.getUserById)(_id)
+
+            if (!user) {
+                throw new NotFoundException("User not found", ErrorCodes.USER_NOT_FOUND)
+            }
+
+            const isPasswordValid = await argon.verify(user.password || " ", oldPassword)
+
+            if (!isPasswordValid) {
+                throw new ForbiddenException("Invalid credentials", ErrorCodes.UNAUTHORIZED_ACCESS)
+            }
+
+            const hash = await argon.hash(password)
+
+            await withErrorHandling(this.authService.updatePassword)(_id, hash)
+
+            return sendResponse(res, {
+                success: true,
+                message: "Password updated",
+                status: 200
+            })
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    private forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { username } = req.body
+
+            const user = await withErrorHandling(this.authService.getUserByEmailOrUsername)(username)
+
+            if (!user) {
+                throw new NotFoundException("User not found", ErrorCodes.USER_NOT_FOUND)
+            }
+
+            const secret = generateToken()
+
+            await withErrorHandling(this.authService.createScret)(user._id, secret, "password_reset", Date.now() + env.PASSWORD_RESET_EXPIRY * 1000)
+
+            const resetLink = `${env.SITE_URL}/reset-password?secret=${secret}`
+
+            const html = await compileTemplate("forget-password.hbs", {
+                logo: env.LOGO_URL,
+                resetLink
+            })
+
+            sendMail({
+                to: user.email,
+                subject: "Password Reset",
+                html,
+                text: `Reset your password by clicking on this link: ${resetLink}`
+            })
+
+            return sendResponse(res, {
+                success: true,
+                message: "Password reset link sent",
+                status: 200
+            })
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    private resetPassword = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { secret, password } = req.body
+
+            const secretDoc = await withErrorHandling(this.authService.getSecretBySecret)(secret)
+
+            if (!secretDoc) {
+                throw new NotFoundException("Secret not found", ErrorCodes.SECRET_NOT_FOUND)
+            }
+
+            console.log(secretDoc.expiresAt, Date.now())
+
+            if (secretDoc.expiresAt < Date.now()) {
+                throw new ForbiddenException("Expired secret", ErrorCodes.SECRET_EXPIRED)
+            }
+
+            const hash = await argon.hash(password)
+
+            await withErrorHandling(this.authService.updatePassword)(secretDoc._id as string, hash)
+
+            await withErrorHandling(this.authService.deleteEmailVerificationSecret)(secretDoc._id as string)
+
+            return sendResponse(res, {
+                success: true,
+                message: "Password updated",
+                status: 200
+            })
+        } catch (error) {
+            next(error);
+        }
     }
 }
 

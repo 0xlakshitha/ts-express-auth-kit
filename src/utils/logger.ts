@@ -2,7 +2,7 @@ import winston from "winston"
 const { combine, timestamp, printf } = winston.format
 import dayjs from "dayjs";
 import { env } from "@/config/env";
-import * as rfs from "rotating-file-stream"
+// import * as rfs from "rotating-file-stream"
 import expressWinston from "express-winston"
 import path from "path";
 import fs from "fs"
@@ -16,6 +16,7 @@ const myFormat: winston.Logform.Format = printf((
 
 export const getTransports = (name: string): winston.transports.ConsoleTransportInstance[] | winston.transports.StreamTransportInstance[] => {
   if (env.NODE_ENV === "production") {
+    const rfs = require("rotating-file-stream")
     const logDirectory = path.resolve(__dirname, `../../logs/${name}`);
 
     if (!fs.existsSync(logDirectory)) {

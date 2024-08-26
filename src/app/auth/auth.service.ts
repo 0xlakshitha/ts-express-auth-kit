@@ -32,11 +32,13 @@ class AuthService {
         return user 
     }
 
-    public async createScret(_id: string, secret: string) : Promise<void> {
+    public async createScret(_id: string, secret: string, purpose: "email_verification" | "password_reset", expiresAt: number = Date.now()) : Promise<void> {
         await Secret.updateOne({
             _id
         }, {
-            secret
+            secret,
+            purpose,
+            expiresAt
         }, {
             upsert: true
         })
@@ -47,12 +49,21 @@ class AuthService {
         return secret
     }
 
+    public async getSecretBySecret(secret: string) : Promise<ISecret | null> {
+        const secretDoc = await Secret.findOne({ secret })
+        return secretDoc
+    }
+
     public async updateEmailVerificationStatus(id: string) : Promise<void> {
         await User.updateOne({ _id: id }, { isEmailVerified: true })
     }
 
     public async deleteEmailVerificationSecret(id: string) : Promise<void> {
         await Secret.deleteOne({ _id: id })
+    }
+
+    public async updatePassword(id: string, password: string) : Promise<void> {
+        await User.updateOne({ _id: id }, { password }) 
     }
 }
 

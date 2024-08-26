@@ -2,7 +2,7 @@
     "clientName": "Thunder Client",
     "collectionName": "node-ts-auth",
     "collectionId": "dd8b1e05-8171-4d2a-a4d9-e6bf31d50c58",
-    "dateExported": "2024-08-26T11:26:03.232Z",
+    "dateExported": "2024-08-26T18:51:09.279Z",
     "version": "1.2",
     "folders": [
         {
@@ -100,7 +100,62 @@
                 "type": "bearer",
                 "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NmNjNTVjMGU3NmZmYmFlOGFkOWE1Y2EiLCJyb2xlIjoidXNlciIsImlhdCI6MTcyNDY2NzUyMywiZXhwIjoxNzI1MjcyMzIzfQ.93KDuEqlY9p2DradbG4q2CQgloG4GLIifCxS-SNuFsw"
             }
+        },
+        {
+            "_id": "1d902ab7-77c3-4bfd-8a14-9f8f46045b22",
+            "colId": "dd8b1e05-8171-4d2a-a4d9-e6bf31d50c58",
+            "containerId": "5e8b281d-99cb-4057-8071-ae558871c49d",
+            "name": "Change Password",
+            "url": "http://localhost:8888/api/auth/change-password",
+            "method": "POST",
+            "sortNum": 60000,
+            "created": "2024-08-26T18:38:04.070Z",
+            "modified": "2024-08-26T18:39:39.590Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"password\": \"HelloWorld\",\n  \"oldPassword\": \"password\"\n}",
+                "form": []
+            },
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NmNjNTVjMGU3NmZmYmFlOGFkOWE1Y2EiLCJyb2xlIjoidXNlciIsImlhdCI6MTcyNDY2NzUyMywiZXhwIjoxNzI1MjcyMzIzfQ.93KDuEqlY9p2DradbG4q2CQgloG4GLIifCxS-SNuFsw"
+            }
+        },
+        {
+            "_id": "83598f88-44ca-46b2-b57e-4a58f6987752",
+            "colId": "dd8b1e05-8171-4d2a-a4d9-e6bf31d50c58",
+            "containerId": "5e8b281d-99cb-4057-8071-ae558871c49d",
+            "name": "Forget Password",
+            "url": "http://localhost:8888/api/auth/forgot-password",
+            "method": "POST",
+            "sortNum": 70000,
+            "created": "2024-08-26T18:41:12.147Z",
+            "modified": "2024-08-26T18:43:23.510Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"username\": \"lakshitha\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "0349c632-7ee0-4912-b981-24f5d52d7444",
+            "colId": "dd8b1e05-8171-4d2a-a4d9-e6bf31d50c58",
+            "containerId": "5e8b281d-99cb-4057-8071-ae558871c49d",
+            "name": "Reset Password",
+            "url": "http://localhost:8888/api/auth/reset-password",
+            "method": "POST",
+            "sortNum": 80000,
+            "created": "2024-08-26T18:44:15.575Z",
+            "modified": "2024-08-26T18:50:42.822Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"secret\": \"953f23d3850b99833540ff3ffb4d35db392a2e46\",\n  \"password\": \"password\"\n}",
+                "form": []
+            }
         }
     ],
-    "ref": "FY0-s6wbjQJ5Au9MdhqPaYURmoZKmOENLYvqPddldN-MPeVlR6xIxL44LQEIrtBUq69Qr5pZEwfJG9nLWmcmig"
+    "ref": "FY0-s6wbjQJ5Au9MdhqPadsvHqGuB9k606Mi6iMe60aoZaZIZYS6LLZOUk1PuPc2OCPBII_g1uOj7WtEUzZaqw"
 }
