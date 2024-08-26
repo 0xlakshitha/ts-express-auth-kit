@@ -4,7 +4,7 @@ export interface SignUpDto {
     email: string 
     mobile: string
     nic: string
-    sponsor: string 
+    sponsor?: string | null
     username: string 
     password: string 
     profilePic: string

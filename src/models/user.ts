@@ -1,6 +1,7 @@
 import mongoose, {Document, Schema} from "mongoose";
 
 export interface IUser extends Document {
+    _id: string
     firstName?: string
     lastName?: string
     email?: string 
@@ -40,7 +41,7 @@ const userSchema = new Schema<IUser>({
     sponsor: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true
+        required: false
     },
     username: {
         type: String,

@@ -16,6 +16,7 @@ const withErrorHandling = <T extends (...args: any[]) => any>(fn: T) => {
             if (error.name === 'CastError') {
                 throw new BadRequestException('Invalid ID');
             }
+    
             throw error;
         }
     };

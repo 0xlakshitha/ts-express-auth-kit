@@ -1,0 +1,106 @@
+{
+    "clientName": "Thunder Client",
+    "collectionName": "node-ts-auth",
+    "collectionId": "dd8b1e05-8171-4d2a-a4d9-e6bf31d50c58",
+    "dateExported": "2024-08-26T11:26:03.232Z",
+    "version": "1.2",
+    "folders": [
+        {
+            "_id": "5e8b281d-99cb-4057-8071-ae558871c49d",
+            "name": "auth",
+            "containerId": "",
+            "created": "2024-08-26T10:13:29.080Z",
+            "sortNum": 10000
+        }
+    ],
+    "requests": [
+        {
+            "_id": "789a0223-3a58-4a87-b5f8-70ef87e15478",
+            "colId": "dd8b1e05-8171-4d2a-a4d9-e6bf31d50c58",
+            "containerId": "5e8b281d-99cb-4057-8071-ae558871c49d",
+            "name": "Sign UP",
+            "url": "http://localhost:8888/api/auth/signup",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2024-08-26T10:13:43.271Z",
+            "modified": "2024-08-26T10:15:11.897Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"firstName\": \"Lakshitha\",\n  \"lastName\": \"Maduranga\",\n  \"email\": \"clipstube98@gmail.com\",\n  \"mobile\": \"0775843982\",\n  \"nic\": \"894943048V\",\n  \"sponsor\": \"null\",\n  \"username\": \"lakshitha\",\n  \"password\": \"password\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "be1fd5cb-a013-44dc-a163-aeefcca0815d",
+            "colId": "dd8b1e05-8171-4d2a-a4d9-e6bf31d50c58",
+            "containerId": "5e8b281d-99cb-4057-8071-ae558871c49d",
+            "name": "Sign In",
+            "url": "http://localhost:8888/api/auth/signin",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2024-08-26T10:16:14.726Z",
+            "modified": "2024-08-26T11:14:51.096Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"username\": \"clipstube98@gmail.com\",\n  \"password\": \"password\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "ee789975-d1e8-4360-9fa2-3c654d6d8225",
+            "colId": "dd8b1e05-8171-4d2a-a4d9-e6bf31d50c58",
+            "containerId": "5e8b281d-99cb-4057-8071-ae558871c49d",
+            "name": "Get Me",
+            "url": "http://localhost:8888/api/auth/me",
+            "method": "GET",
+            "sortNum": 30000,
+            "created": "2024-08-26T10:17:29.696Z",
+            "modified": "2024-08-26T10:18:52.386Z",
+            "headers": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NmNjNTVjMGU3NmZmYmFlOGFkOWE1Y2EiLCJyb2xlIjoidXNlciIsImlhdCI6MTcyNDY2NzUyMywiZXhwIjoxNzI1MjcyMzIzfQ.93KDuEqlY9p2DradbG4q2CQgloG4GLIifCxS-SNuFsw"
+            }
+        },
+        {
+            "_id": "32133f78-46ee-4a23-95aa-09fb877d256a",
+            "colId": "dd8b1e05-8171-4d2a-a4d9-e6bf31d50c58",
+            "containerId": "5e8b281d-99cb-4057-8071-ae558871c49d",
+            "name": "Verify Email",
+            "url": "http://localhost:8888/api/auth/verify-email",
+            "method": "POST",
+            "sortNum": 40000,
+            "created": "2024-08-26T11:07:22.780Z",
+            "modified": "2024-08-26T11:23:18.629Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"otp\": \"028716\"\n}",
+                "form": []
+            },
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NmNjNTVjMGU3NmZmYmFlOGFkOWE1Y2EiLCJyb2xlIjoidXNlciIsImlhdCI6MTcyNDY2NzUyMywiZXhwIjoxNzI1MjcyMzIzfQ.93KDuEqlY9p2DradbG4q2CQgloG4GLIifCxS-SNuFsw"
+            }
+        },
+        {
+            "_id": "9dcde4a4-fa08-49e2-8b2f-c667c5df54cc",
+            "colId": "dd8b1e05-8171-4d2a-a4d9-e6bf31d50c58",
+            "containerId": "5e8b281d-99cb-4057-8071-ae558871c49d",
+            "name": "Resend Email Verification",
+            "url": "http://localhost:8888/api/auth/resend-verification-email",
+            "method": "POST",
+            "sortNum": 50000,
+            "created": "2024-08-26T11:19:04.983Z",
+            "modified": "2024-08-26T11:19:49.020Z",
+            "headers": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NmNjNTVjMGU3NmZmYmFlOGFkOWE1Y2EiLCJyb2xlIjoidXNlciIsImlhdCI6MTcyNDY2NzUyMywiZXhwIjoxNzI1MjcyMzIzfQ.93KDuEqlY9p2DradbG4q2CQgloG4GLIifCxS-SNuFsw"
+            }
+        }
+    ],
+    "ref": "FY0-s6wbjQJ5Au9MdhqPaYURmoZKmOENLYvqPddldN-MPeVlR6xIxL44LQEIrtBUq69Qr5pZEwfJG9nLWmcmig"
+}

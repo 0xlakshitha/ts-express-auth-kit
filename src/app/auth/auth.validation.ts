@@ -17,3 +17,7 @@ export const singInValidation = Joi.object({
     password: Joi.string().required()
 })
 
+export const emailVerificationValidation = Joi.object({
+    otp: Joi.string().max(6).min(6).required()
+})
+

@@ -42,6 +42,12 @@ class App {
     }
 
     private initializeControllers(controllers: Controller[]): void {
+        this.express.get('/', (req, res) => {
+            res.status(200).json({
+                status: 'SERVER UP'
+            })
+        })
+
         controllers.forEach((controller: Controller) => {
             this.express.use('/api', controller.router)
         })

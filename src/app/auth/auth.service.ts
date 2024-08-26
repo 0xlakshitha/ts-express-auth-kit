@@ -1,8 +1,8 @@
-import { IUser, User } from "../../models";
+import { ISecret, IUser, Secret, User } from "../../models";
 import { SignUpDto } from "./auth.dto";
 
 class AuthService {
-    public async createUser(dto: SignUpDto) : Promise<IUser | Error> {
+    public async createUser(dto: SignUpDto) : Promise<IUser> {
         const user = new User({
             ...dto
         })
@@ -25,6 +25,34 @@ class AuthService {
     public async getUserByEmail(email: string) : Promise<IUser | null> {
         const user = await User.findOne({ email })  
         return user
+    }
+
+    public async getUserByEmailOrUsername(username: string) : Promise<IUser | null> {
+        const user = await User.findOne({ $or: [{ username }, { email: username }] })
+        return user 
+    }
+
+    public async createScret(_id: string, secret: string) : Promise<void> {
+        await Secret.updateOne({
+            _id
+        }, {
+            secret
+        }, {
+            upsert: true
+        })
+    }
+
+    public async getSecret(_id: string) : Promise<ISecret | null> {
+        const secret = await Secret.findById(_id)
+        return secret
+    }
+
+    public async updateEmailVerificationStatus(id: string) : Promise<void> {
+        await User.updateOne({ _id: id }, { isEmailVerified: true })
+    }
+
+    public async deleteEmailVerificationSecret(id: string) : Promise<void> {
+        await Secret.deleteOne({ _id: id })
     }
 }
 
