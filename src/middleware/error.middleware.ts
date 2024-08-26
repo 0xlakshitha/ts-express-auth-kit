@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import HttpException from '@/utils/exceptions/http.exception'
+import { sendResponse } from "@/utils/response";
 
 function ErrorMiddleware(
     error: HttpException,
@@ -9,10 +10,13 @@ function ErrorMiddleware(
 ) {
     const status = error.status || 500
     const message = error.message || 'Something went wrong, Please try again later'
+    const code = error.code || 'INTERNAL_SERVER_ERROR'
 
-    res.status(status).send({
-        status,
-        message
+    return sendResponse(res, {
+        success: false,
+        status: status,
+        message: message,
+        code: code
     })
 }
 

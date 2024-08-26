@@ -1,28 +1,40 @@
 import winston from "winston"
 const { combine, timestamp, printf } = winston.format
 import dayjs from "dayjs";
+import { env } from "@/config/env";
+import * as rfs from "rotating-file-stream"
+import expressWinston from "express-winston"
+import path from "path";
+import fs from "fs"
 
 const myFormat: winston.Logform.Format = printf((
-    { level, message, timestamp } : winston.Logform.TransformableInfo) => {
+  { level, message, timestamp }: winston.Logform.TransformableInfo) => {
 
   return `${timestamp} ${level}: ${message}`
 
 });
 
-let transports :
-    winston.transports.FileTransportInstance[] |
-    winston.transports.ConsoleTransportInstance[] = []
+export const getTransports = (name: string): winston.transports.ConsoleTransportInstance[] | winston.transports.StreamTransportInstance[] => {
+  if (env.NODE_ENV === "production") {
+    const logDirectory = path.resolve(__dirname, `../../logs/${name}`);
 
-if (process.env.NODE_ENV === 'production') {
-    transports = [
-        new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
-        new winston.transports.File({ filename: 'logs/info.log', level: 'info' })
-    ];
-} else {
-    transports = [new winston.transports.Console()];
+    if (!fs.existsSync(logDirectory)) {
+      fs.mkdirSync(logDirectory, { recursive: true });
+    }
+
+    return [new winston.transports.Stream({
+      stream: rfs.createStream(`${name}.log.txt`, {
+        interval: '1d',
+        path: logDirectory
+      })
+    })]
+  }
+  else {
+    return [new winston.transports.Console()]
+  }
 }
 
-const logger = winston.createLogger({
+export const logger = winston.createLogger({
   level: 'info',
   format: combine(
     timestamp({
@@ -30,7 +42,28 @@ const logger = winston.createLogger({
     }),
     myFormat
   ),
-  transports: transports
+  transports: getTransports("app")
 })
 
-export default logger
+export const expressWinstonLogger = expressWinston.logger({
+  transports: getTransports("express"),
+  format: combine(
+    timestamp({
+      format: () => `TIME: ${dayjs().format()}`
+    }),
+    myFormat
+  ),
+  meta: true,
+  msg: 'HTTP {{req.method}} {{req.url}}\n',
+  expressFormat: true
+})
+
+export const expressWinstonErrorLogger = expressWinston.errorLogger({
+	transports: getTransports("express"),
+	format: combine(
+    timestamp({
+      format: () => `TIME: ${dayjs().format()}`
+    }),
+    myFormat
+  ),
+});

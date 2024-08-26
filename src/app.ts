@@ -3,12 +3,12 @@ import mongoose from 'mongoose'
 import compression from 'compression'
 import cors from 'cors'
 import morgan from 'morgan'
-import Controller from '@/utils/interfaces/controller.interface'
+import { Controller } from 'interfaces'
 import ErrorMiddleware from '@/middleware/error.middleware'
 import NotFoundMiddleware from '@/middleware/404.midlleware'
 import helmet from 'helmet'
 import { createServer } from 'http'
-import logger from '@/utils/logger'
+import { logger, expressWinstonErrorLogger, expressWinstonLogger } from './utils/logger'
 import { env } from '@/config/env'
 
 class App {
@@ -38,6 +38,7 @@ class App {
         this.express.use(express.json())
         this.express.use(express.urlencoded({ extended: false }))
         this.express.use(compression())
+        this.express.use(expressWinstonLogger)
     }
 
     private initializeControllers(controllers: Controller[]): void {
@@ -57,6 +58,7 @@ class App {
     }
 
     private initializeErrorHandling(): void {
+        this.express.use(expressWinstonErrorLogger)
         this.express.use(ErrorMiddleware)
     }
 

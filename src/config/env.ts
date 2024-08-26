@@ -7,6 +7,7 @@ export const env = zennv({
         NODE_ENV: z.string().regex(/^(development|production)$/).default('development'),
         MONGO_URI: z.string(),
         PORT: z.number().default(8888),
-        HOST: z.string().default('localhost')
+        HOST: z.string().default('localhost'),
+        JWT_SECRET: z.string()
     })
 })

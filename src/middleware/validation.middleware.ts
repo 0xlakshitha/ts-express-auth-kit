@@ -1,5 +1,7 @@
+import ErrorCodes from "@/config/error.codes";
+import { sendResponse } from "@/utils/response";
 import { Request, Response, NextFunction, RequestHandler } from "express";
-import Joi from 'joi'
+import Joi, { ValidationError, ValidationErrorItem } from 'joi'
 
 function validationMiddleware(schema: Joi.Schema): RequestHandler {
     return async (
@@ -21,11 +23,20 @@ function validationMiddleware(schema: Joi.Schema): RequestHandler {
             req.body = value
             next()
         } catch (e: any) {
-            const errors: string[] = []
-            e.details.forEach((error: Joi.ValidationErrorItem) => {
-                errors.push(error.message)
+            let errorMessage : string = "Validation Error"
+            let errors: ValidationErrorItem[] = []
+            if(e instanceof ValidationError) {
+                errorMessage = `Validation Error: ${e.details.map((err) => err.message).join(" , ")}`
+                errors = e.details
+            }
+            
+            return sendResponse(res, {
+                success: false,
+                status: 400,
+                message: errorMessage,
+                code: ErrorCodes.VALIDATION_FAILED,
+                errors
             })
-            res.status(400).send({errors})
         }
     }
 }   
