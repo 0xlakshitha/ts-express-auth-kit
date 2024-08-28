@@ -68,7 +68,7 @@ const userSchema = new Schema<IUser>({
     timestamps: true
 })
 
-userSchema.index({ email: 1, username: 1, sponsor: 1 })
+userSchema.index({ email: 1, username: 1, sponsor: 1, nic: 1, mobile: 1})
 userSchema.index({ email: "text", username: "text"})
 
 export const User = mongoose.models.User || mongoose.model<IUser>("User", userSchema, "users")

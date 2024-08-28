@@ -35,3 +35,7 @@ export const resetPasswordValidation = Joi.object({
     password: Joi.string().min(8).required()
 })
 
+export const checkUsernameValidation = Joi.object({
+    username: Joi.string().required()
+})
+

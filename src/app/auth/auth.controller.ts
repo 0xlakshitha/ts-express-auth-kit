@@ -7,7 +7,7 @@ import ErrorCodes from "@/config/error.codes";
 import withErrorHandling from "@/utils/error.handling";
 import * as argon from "argon2"
 import validationMiddleware from "@/middleware/validation.middleware";
-import { emailVerificationValidation, forgotPasswordValidation, passwordChangeValidation, resetPasswordValidation, signUpValidation, singInValidation } from "./auth.validation";
+import { checkUsernameValidation, emailVerificationValidation, forgotPasswordValidation, passwordChangeValidation, resetPasswordValidation, signUpValidation, singInValidation } from "./auth.validation";
 import { authenticator } from "otplib";
 import { env } from "@/config/env";
 import { compileTemplate } from "@/utils/hbs";
@@ -74,6 +74,11 @@ class AuthController implements Controller {
             validationMiddleware(resetPasswordValidation),
             this.resetPassword
         )
+        this.router.post(
+            `${this.path}/check-username`,
+            validationMiddleware(checkUsernameValidation),
+            this.checkUsername
+        )
     }
 
     private signUp = async (req: Request, res: Response, next: NextFunction) => {
@@ -93,13 +98,25 @@ class AuthController implements Controller {
             const emailExists = await withErrorHandling(this.authService.getUserByEmail)(email);
 
             if (emailExists) {
-                throw new ForbiddenException("Email already exists", ErrorCodes.CREDENTIALS_TAKEN);
+                throw new ForbiddenException(`${email} is already in use`, ErrorCodes.CREDENTIALS_TAKEN);
             }
 
             const usernameExists = await withErrorHandling(this.authService.getUserByUsername)(username);
 
             if (usernameExists) {
                 throw new ForbiddenException("Username already exists", ErrorCodes.CREDENTIALS_TAKEN);
+            }
+
+            const mobileExists = await withErrorHandling(this.authService.getUserByMobile)(mobile);
+
+            if (mobileExists) {
+                throw new ForbiddenException("Mobile number already exists", ErrorCodes.CREDENTIALS_TAKEN);
+            }
+
+            const nicExists = await withErrorHandling(this.authService.getUserByNic)(nic);
+
+            if (nicExists) {
+                throw new ForbiddenException("NIC already exists", ErrorCodes.CREDENTIALS_TAKEN);
             }
 
             const hash = await argon.hash(password);
@@ -125,7 +142,13 @@ class AuthController implements Controller {
 
             return sendResponse(res, {
                 success: true,
-                data: { token },
+                data: {
+                    user: {
+                        ...user.toObject(),
+                        password: undefined
+                    },
+                    access_token: token
+                },
                 status: 201
             })
         } catch (error) {
@@ -156,7 +179,13 @@ class AuthController implements Controller {
 
             return sendResponse(res, {
                 success: true,
-                data: { token },
+                data: {
+                    user: {
+                        ...user.toObject(),
+                        password: undefined
+                    },
+                    access_token: token
+                },
                 status: 200
             });
         } catch (error) {
@@ -174,11 +203,19 @@ class AuthController implements Controller {
                 throw new NotFoundException("User not found", ErrorCodes.USER_NOT_FOUND);
             }
 
+            const token = createToken({
+                _id: user._id,
+                role: "user"
+            })
+
             return sendResponse(res, {
                 success: true,
                 data: {
-                    ...user.toObject(),
-                    password: undefined
+                    user: {
+                        ...user.toObject(),
+                        password: undefined
+                    },
+                    access_token: token
                 },
                 status: 200
             })
@@ -353,6 +390,24 @@ class AuthController implements Controller {
             return sendResponse(res, {
                 success: true,
                 message: "Password updated",
+                status: 200
+            })
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    private checkUsername = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { username } = req.body
+
+            const user = await withErrorHandling(this.authService.getUserByUsername)(username)
+
+            return sendResponse(res, {
+                success: true,
+                data: {
+                    exists: !!user
+                },
                 status: 200
             })
         } catch (error) {
