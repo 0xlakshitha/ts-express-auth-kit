@@ -18,7 +18,8 @@ class AuthService {
     }
 
     public async getUserByUsername(username: string) : Promise<IUser | null> {
-        const user = await User.findOne({ username }) 
+        // need to ignore case
+        const user = await User.findOne({ username : { $regex: new RegExp(username, "i") } }) 
         return user
     }
 
@@ -64,6 +65,18 @@ class AuthService {
 
     public async updatePassword(id: string, password: string) : Promise<void> {
         await User.updateOne({ _id: id }, { password }) 
+    }
+
+    public async getUserByNic(nic: string) : Promise<IUser | null> {
+        const user = await User.findOne({ nic: {
+            $regex: new RegExp(nic, "i")
+        } })
+        return user
+    }
+
+    public async getUserByMobile(mobile: string) : Promise<IUser | null> {
+        const user = await User.findOne({ mobile })
+        return user
     }
 }
 
