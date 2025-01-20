@@ -2,16 +2,17 @@ import mongoose, {Document, Schema} from "mongoose";
 
 export interface IUser extends Document {
     _id: string
-    firstName?: string
-    lastName?: string
-    email?: string 
+    firstName: string
+    lastName: string
+    email: string 
     mobile?: string
     nic?: string
     sponsor?: string 
-    username?: string 
-    password?: string 
+    username: string 
+    password: string 
     isEmailVerified?: boolean 
-    role?: "admin" | "user" | "staff"
+    status: "pending" | "active" | "inactive"
+    role: "admin" | "user" | "staff"
     profilePic?: string
     createdAt?: Date 
     updatedAt?: Date
@@ -32,11 +33,9 @@ const userSchema = new Schema<IUser>({
     },
     mobile: {
         type: String,
-        required: true
     },
     nic: {
         type: String,
-        required: true 
     },
     sponsor: {
         type: mongoose.Schema.Types.ObjectId,
@@ -55,6 +54,11 @@ const userSchema = new Schema<IUser>({
     isEmailVerified: {
         type: Boolean,
         default: false
+    },
+    status: {
+        type: String,
+        enum: ["pending", "active", "inactive"],
+        default: "pending"
     },
     role: {
         type: String,
