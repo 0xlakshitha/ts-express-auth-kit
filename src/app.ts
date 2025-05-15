@@ -10,6 +10,7 @@ import helmet from 'helmet'
 import { createServer } from 'http'
 import { logger, expressWinstonErrorLogger, expressWinstonLogger } from './utils/logger'
 import { env } from '@/config/env'
+import socketService from '@/services/socket.service'
 
 class App {
     public express: Application
@@ -29,6 +30,7 @@ class App {
         this.initializeNotFoundMiddleware()
         this.initializeErrorHandling()
         this.createHttpServer()
+        this.initializeSocketIO()
     }
 
     private initializeMiddleware(): void {
@@ -78,6 +80,15 @@ class App {
 
     private createHttpServer(): void {
         this.server = createServer(this.express)
+    }
+
+    private initializeSocketIO(): void {
+        if (this.server === null) {
+            logger.error('Server is not initialized')
+            return
+        }
+
+        socketService.initialize(this.server)
     }
 
     public listen(): void {
