@@ -1,5 +1,5 @@
 import { env } from "@/config/env";
-import { AccountRoles } from "../@types/types";
+import { AccountRoles } from "../types/types";
 import { NextFunction, Request, Response } from "express";
 import { ForbiddenException, UnathorizedException } from "@/utils/exceptions";
 import ErrorCodes from "@/config/error.codes";

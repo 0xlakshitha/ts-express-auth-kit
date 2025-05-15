@@ -6,7 +6,7 @@ function NotFoundMiddleware(
     res: Response,
     next: NextFunction
 ) {
-    return res.status(StatusCodes.NOT_FOUND).send({
+    res.status(StatusCodes.NOT_FOUND).send({
         status: StatusCodes.NOT_FOUND,
         message: 'Route does not exist'
     })
